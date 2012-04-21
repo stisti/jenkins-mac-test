@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/bin/bash -ex
 
 uninstall() {
-    sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist
+    sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist || true
     sleep 5
     
     sudo rm -f /Library/LaunchDaemons/org.jenkins-ci.plist
@@ -10,6 +10,8 @@ uninstall() {
     /Library/Documentation/Jenkins \
     "/Library/Application Support/Jenkins"
     
+    osascript -e 'tell application "Safari" to close every window'
+    osascript -e 'tell application "Activity Monitor" to activate'
 }
 
 uninstall
