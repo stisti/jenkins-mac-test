@@ -16,3 +16,4 @@ uninstall
 
 sudo installer -pkg jenkins*.pkg -target /
 
+curl -sf -D /dev/stderr http://localhost:8080/ 2>&1 >/dev/null | tr -d '\015' | grep X-Jenkins:
