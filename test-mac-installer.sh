@@ -1,4 +1,4 @@
-#!/bin/bash -ex
+#!/bin/bash -x
 
 uninstall() {
     sudo launchctl unload /Library/LaunchDaemons/org.jenkins-ci.plist || true
@@ -16,6 +16,14 @@ uninstall() {
 
 uninstall
 
-sudo installer -pkg jenkins*.pkg -target /
+sudo installer -pkg jenkins*.pkg -target / || exit 1
 
-curl -sf -D /dev/stderr http://localhost:8080/ 2>&1 >/dev/null | tr -d '\015' | grep X-Jenkins:
+jenkins_is_ok() {
+    curl -sf -D /dev/stderr http://localhost:8080/ 2>&1 >/dev/null | tr -d '\015' | grep X-Jenkins:
+}
+
+timeout=$(($(date +%s) + 300))
+until jenkins_is_ok || [ $(date +%s) -gt $timeout ] ; do
+    sleep 1
+done
+jenkins_is_ok
